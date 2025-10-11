@@ -7,5 +7,8 @@ import { User, UserDocument } from '../schema/user';
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
+  async getData() : Promise<User[]> {
+    return this.userModel.find().exec()
+  }
   
 }

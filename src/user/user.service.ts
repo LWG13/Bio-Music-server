@@ -12,7 +12,12 @@ export class UserService {
 
   async google(token: string) {
     try {
+      if (!this.firebaseApp) {
+        throw new BadRequestException('Firebase is not configured. Please contact administrator.');
+      }
+
       const decoded = await this.firebaseApp.auth().verifyIdToken(token);
+      console.log("decoded", decoded)
       const email = decoded.email;
       const uid = decoded.uid;
       const name = decoded.name || email.split('@')[0];
@@ -40,6 +45,7 @@ export class UserService {
 
       return { tokenJWT };
     } catch (err) {
+      console.error('Firebase verification error:', err);
       throw new BadRequestException('Invalid Firebase token');
     }
   }

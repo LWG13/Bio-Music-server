@@ -61,7 +61,7 @@ logout(@Res({ passthrough: true }) res: Response) {
 }
   @Post('google')
   async firebaseLogin(@Res({ passthrough: true}) res: Response, @Body('token') token1: string) {
-    const { tokenJWT } = await this.userService.google(token1);
+    const { tokenJWT } =  await this.userService.google(token1);
     res.cookie('jwt', tokenJWT, {
       httpOnly: true,
       sameSite: 'none',

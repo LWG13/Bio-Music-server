@@ -1,15 +1,48 @@
-import { Injectable, BadRequestException} from '@nestjs/common';
+import { Injectable, BadRequestException, Inject} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../schema/user';
 
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-
+import * as admin from 'firebase-admin';
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, private jwtService: JwtService) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, private jwtService: JwtService, @Inject('FIREBASE_ADMIN') private firebaseApp: admin.app.App) {}
 
+  async google(token: string) {
+    try {
+      const decoded = await this.firebaseApp.auth().verifyIdToken(token);
+      const email = decoded.email;
+      const uid = decoded.uid;
+      const name = decoded.name || email.split('@')[0];
+      const avatar = decoded.picture || '';
+
+      let user = await this.userModel.findById(email)
+
+
+      if (!user) {
+        const newUser = new this.userModel({
+          email: email,
+          username: name,
+          image: avatar,
+          role: "client"
+        })
+         
+        const payload = { id: newUser._id };
+        const tokenJWT = this.jwtService.sign(payload);
+        await newUser.save()
+         return { tokenJWT }
+      }
+       
+      const payload = { id: user._id };
+      const tokenJWT = this.jwtService.sign(payload);
+
+      return { tokenJWT };
+    } catch (err) {
+      throw new BadRequestException('Invalid Firebase token');
+    }
+  }
   async getData() : Promise<User[]> {
     return this.userModel.find().exec()
   }

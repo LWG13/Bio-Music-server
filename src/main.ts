@@ -26,8 +26,7 @@ async function bootstrap() {
 });
   app.use(cookieParser());
   
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
-  console.log(`Application is running on: http://0.0.0.0:${port}`);
+  await app.listen(3000);
+  console.log(`Application is running on: http://0.0.0.0:3000`);
 }
 bootstrap();

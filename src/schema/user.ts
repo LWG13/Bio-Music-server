@@ -8,7 +8,7 @@ export class User {
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: true })
+  @Prop()
   password: string;
 
   @Prop()
@@ -16,6 +16,12 @@ export class User {
 
   @Prop({ default: '' })
   image: string;
+
+  @Prop() 
+  role: string
+
+  @Prop({default: []})
+  follower: String[]
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

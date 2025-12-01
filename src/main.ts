@@ -19,7 +19,7 @@ async function bootstrap() {
   app.use(new SanitizeMiddleware().use);
   app.useLogger(['error', 'warn', 'log', 'debug', 'verbose']);
   app.enableCors({
-  origin: "https://8adef7fa-9807-44e6-991b-a136b916412e-00-3f29t5m359pgk.spock.replit.dev",
+  origin: "https://bio-music-seven.vercel.app",
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
